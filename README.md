@@ -60,3 +60,6 @@ IEX ([System.Text.Encoding]::Unicode.GetString($b))
 # AV Results
 
 ![AV detection](https://i.ibb.co/fdQJD4Y/Screenshot-1.png)
+
+#Patch Notes
+13/11/2020 : Modifying template.txt for Defender signature :D
