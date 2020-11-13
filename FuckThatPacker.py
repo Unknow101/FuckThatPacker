@@ -1,7 +1,10 @@
 import base64
 import argparse
+import re
+
 def xor_payload(payload,key):
-	return ''.join(chr(ord(a) ^ key) for a in payload)
+        return ''.join(chr(ord(a) ^ key) for a in payload)
+
 
 banner = '''
   ___        _   _____ _         _   ___         _           
@@ -22,30 +25,26 @@ args = parser.parse_args()
 key = args.key
 
 with open(args.payload) as f:
-	content = f.read()
+        content = f.read()
 
 print "[+] Encode UTF16-LE"
-content = content.encode("utf-16")
+content = content.encode("utf-16-le")
 print "[+] Cyphering Payload ..."
 content = xor_payload(content,key)
 
-#print content
 print "[+] Base64 Payload"
 content = base64.b64encode(content)
-#print content
 
 print "[+] Writting into Template"
 with open("template.txt") as f:
-	template = f.read()
+        template = f.read()
 
 template = template.replace("%%DATA%%",content)
 template = template.replace("%%KEY%%",str(key))
 
 if args.output:
-	print "[+] Writting into " + args.output
-	with open(args.output,"w") as f:
-		f.write(template)
+        print "[+] Writting into " + args.output
+        with open(args.output,"w") as f:
+                f.write(template)
 else:
-	print template
-
-
+        print template
