@@ -57,6 +57,28 @@ for ($x = 0; $x -lt $b.Count; $x++) {
 IEX ([System.Text.Encoding]::Unicode.GetString($b))
 ```
 
+# CobaltStrike Integration
+
+17/03/2022 : FuckThatPacker is now integrated to CobaltStrike !
+
+## Setup
+
+At this time, FuckThatPacker should be installed in /opt/Tools/FuckThatPacker (or you can manualy edit the aggressor script).
+After this, you have to load the CNA script into cobalt strike (help : https://trial.cobaltstrike.com/aggressor-script/index.html)
+You should have a new label under the attacks menu :
+
+![New lavel](https://i.ibb.co/8Xzhb0V/Screenshot-1.png)
+
+Then, you have to specify the listener, the key and the output :
+
+![Menu](https://i.ibb.co/x3ywKnS/Screenshot-3.png)
+
+The payload will be generated and packed :
+
+![Packed payload](https://i.ibb.co/dG0SBr4/Screenshot-4.png)
+
+
+
 # AV Results
 
 ![AV detection](https://i.ibb.co/fdQJD4Y/Screenshot-1.png)
