@@ -1,6 +1,8 @@
+#!/usr/bin/python2.7
 import base64
 import argparse
 import re
+import os
 
 def xor_payload(payload,key):
         return ''.join(chr(ord(a) ^ key) for a in payload)
@@ -36,7 +38,8 @@ print "[+] Base64 Payload"
 content = base64.b64encode(content)
 
 print "[+] Writting into Template"
-with open("template.txt") as f:
+path = os.path.dirname(os.path.abspath(__file__))
+with open(path+"/template.txt") as f:
         template = f.read()
 
 template = template.replace("%%DATA%%",content)
