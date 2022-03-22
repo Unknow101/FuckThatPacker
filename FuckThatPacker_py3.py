@@ -9,12 +9,12 @@ def xor_payload(payload,key):
 
 
 banner = '''
-  ___        _   _____ _         _   ___         _           
- | __|  _ __| |_|_   _| |_  __ _| |_| _ \__ _ __| |_____ _ _ 
- | _| || / _| / / | | | ' \/ _` |  _|  _/ _` / _| / / -_) '_|
- |_| \_,_\__|_\_\ |_| |_||_\__,_|\__|_| \__,_\__|_\_\___|_|  
-                                                          
-                                                                      '''
+___        _   _____ _         _   ___         _           
+| __|  _ __| |_|_   _| |_  __ _| |_| _ \__ _ __| |_____ _ _ 
+| _| || / _| / / | | | ' \/ _` |  _|  _/ _` / _| / / -_) '_|
+|_| \_,_\__|_\_\ |_| |_||_\__,_|\__|_| \__,_\__|_\_\___|_|  
+                                                            
+                                                                        '''
 version = "v1.0"
 print (banner)
 print ("Written with <3 by Unknow101/inf0sec")
@@ -27,7 +27,7 @@ args = parser.parse_args()
 key = args.key
 
 with open(args.payload) as f:
-        content = f.read()
+    content = f.read()
 
 print ("[+] Encode UTF16-LE")
 content = content.encode("utf-16-le")
@@ -40,14 +40,14 @@ content = base64.b64encode(content)
 print ("[+] Writting into Template")
 path = os.path.dirname(os.path.abspath(__file__))
 with open(path+"/template.txt") as f:
-        template = f.read()
+    template = f.read()
 
 template = template.replace("%%DATA%%",content)
 template = template.replace("%%KEY%%",str(key))
 
 if args.output:
-        print ("[+] Writting into " + args.output)
-        with open(args.output,"w") as f:
-                f.write(template)
+    print ("[+] Writting into " + args.output)
+    with open(args.output,"w") as f:
+        f.write(template)
 else:
-        print (template)
+    print (template)
