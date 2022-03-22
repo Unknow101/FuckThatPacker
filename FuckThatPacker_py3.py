@@ -29,15 +29,15 @@ key = args.key
 with open(args.payload) as f:
         content = f.read()
 
-print "[+] Encode UTF16-LE"
+print ("[+] Encode UTF16-LE")
 content = content.encode("utf-16-le")
-print "[+] Cyphering Payload ..."
+print ("[+] Cyphering Payload ...")
 content = xor_payload(content,key)
 
-print "[+] Base64 Payload"
+print ("[+] Base64 Payload")
 content = base64.b64encode(content)
 
-print "[+] Writting into Template"
+print ("[+] Writting into Template")
 path = os.path.dirname(os.path.abspath(__file__))
 with open(path+"/template.txt") as f:
         template = f.read()
